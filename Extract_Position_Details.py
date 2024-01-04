@@ -159,7 +159,7 @@ def dept_details(sublist1, sublist2, sublist3):
     #sublist1 is to find information in the first format such as College : 
     if sublist1:
         
-        sublist_string1= '\n'.join(sublist1)                      #strings in list are joined together with a new line  
+        sublist_string1= '\n'.join(sublist1)                        #strings in list are joined together with a new line  
         
         doc1 = nlp(sublist_string1)                                 #creates a doc object based on the new sublist_string
         print("DOC WITH SPACES 1 ",doc1)
@@ -168,13 +168,13 @@ def dept_details(sublist1, sublist2, sublist3):
         for pattern_num in range(3):                              # Loop through the three different variables to find 
             
             matcher1 = Matcher(nlp.vocab)    
-            #print ("numero de pattern",pattern_num)                                # creates a matcher object
-            patterns = get_pattern_of_colon_keywords(pattern_num)           # Selects patterns based on the number 0 -> College         1 -> Department         2 -> Program
-            #print ("patterns returned",patterns)                                        # Add patterns to the matcher (Can delete once completed)
+                                       # creates a matcher object
+            patterns = get_pattern_of_colon_keywords(pattern_num)                   # Selects patterns based on the number 0 -> College         1 -> Department         2 -> Program
+                                     # Add patterns to the matcher (Can delete once completed)
             
-            for pattern in patterns:                                        # Add patterns to the matcher (Can delete once completed)
+            for pattern in patterns:                            # Add patterns to the matcher 
                 matcher1.add("KEY INFO", [pattern])
-                #print ("added pattern ", pattern)  
+             
 
             matches = matcher1(doc1)                              # finds matches in the doc object
 
@@ -196,49 +196,35 @@ def dept_details(sublist1, sublist2, sublist3):
                 text_after_span = doc1[end:end_index].text
 
                 # get the text after the span until the end of the line
-                #print("text after span",text_after_span)
-                #print("key choosen",int_to_out_list[pattern_num])
-                output_dict[int_to_out_list[pattern_num]] = text_after_span  #set the corresponding key in the output dictionary to the text after the span    
+                output_dict[int_to_out_list[pattern_num]] = text_after_span  
+                #set the corresponding key in the output dictionary to the text after the span    
                 print("output dict",output_dict)
 
 
     if any(value is None for value in output_dict.values()):            #checks if any of the values are empty in the output dictionary
-        #print("some values of dic are empty")
+     
 
         if sublist2: 
-            sublist_string2 = '\n'.join(sublist2)                        #strings in list are joined together with a new line   
-            
+            sublist_string2 = '\n'.join(sublist2)                         #strings in list are joined together with a new line   
             doc2 = nlp(sublist_string2) 
-            
-            #print("DOC WITH SPACES 2",doc2)
-            
             matcher2 = Matcher(nlp.vocab)
             for key, value in output_dict.items():              
                 
                 if value is None:
-
-                    #print("key is none",key)
-
                     matcher2 = Matcher(nlp.vocab)
-
                     patterns = get_pattern_of_key_phrases(int_to_out_list.index(key))        #selects patterns of those empty values
-                    #print ("numero de pattern",int_to_out_list.index(key)) 
-                    #print ("patterns returned",patterns)                                        # Add patterns to the matcher (Can delete once completed)
+                                                           
                     
-                    for pattern in patterns:                                        # Add patterns to the matcher (Can delete once completed)
+                    for pattern in patterns:                                        # Add patterns to the matcher 
                         matcher2.add("KEY INFO", [pattern])
-                        #print ("added pattern ", pattern) 
-                    
-                    matches2 = matcher2(doc2)                              # finds matches in the doc object
+                        
+                    matches2 = matcher2(doc2)                                       # finds matches in the doc object
                     matches2B = filter_matches(matches2)
                     
-                    #print("matches2",matches2B)
                     if matches2:
                         match_id, start, end = matches2B[0]
                         span2 = doc2[start:end]
-                        #print("span2",span2)
                         output_dict[key] = span2.text
-                        #print ("KEY HERE",key)
                         print("output dict",output_dict)
     
 
@@ -256,9 +242,8 @@ def dept_details(sublist1, sublist2, sublist3):
                     
                     for pattern in patterns:                                        # Add patterns to the matcher (Can delete once completed)
                         matcher3.add("KEY INFO", [pattern])
-                        #print ("added pattern ", pattern) 
                     
-                    matches3 = matcher3(doc3)                              # finds matches in the doc object
+                    matches3 = matcher3(doc3)                                       # finds matches in the doc object
                     matches3B = filter_matches(matches3)
                     if matches3:
                         match_id, start, end = matches3B[0]
@@ -334,17 +319,11 @@ def review_date(sublist1, sublist2, sublist3):
        
         for pattern in patterns:                                        # Add patterns to the matcher (Can delete once completed)
             matcher1.add("KEY INFO", [pattern])
-            #print ("added pattern ", pattern)  
-
-        
+            
         matches1 = matcher1(doc1)
-        #print("matches found in 1 for doc listf adf",matches1)
-                    
-        
+  
         if matches1:
             matches1B = filter_matches(matches1)
-            #print("matches date 1B  fdfa dfjadf ",matches1B)
-
             review_dates_docs = []
             for match_id, start, end in matches1B:             
                 newline_token = None
@@ -363,41 +342,34 @@ def review_date(sublist1, sublist2, sublist3):
             #previous loop got a list of the docs
         
             if review_dates_docs:
-                #print ("thre is  something in the review dates docs")
-                #print("review dates docs que have ",review_dates_docs)
                 review_dates = []
-
-
                 for doc_date in review_dates_docs:
-                    
                     matcher_date = Matcher(nlp.vocab)
-                
+            
                     for pattern in date_patterns:
                         matcher_date.add("DATE", [pattern])
-                        #print("added pattern fd fffff",pattern) 
+                        
                     
                     matches_date = matcher_date(doc_date)
                     
                     if matches_date:
-                        #print ("it got here and found a match")
+                        
                         matches_dateB = filter_matches(matches_date)
-                        #print("matches 000000000000dfa dfjadf ",matches_dateB)
+                        
                         for match_id, start, end in matches_dateB:
 
                             span_date = doc_date[start:end] 
-                            #span_date= doc1[start:end]
-                            #print("span date 1 ERREF ",span_date)   #upto here got the correct date 
                             review_dates.append(span_date.text)
                             
                 print("review dfas dfdfa dates",review_dates)
  
                 if len(review_dates) == 1:            
                     output_dict["ReviewDate"] = review_dates[0]
-                    #print("output dict 1 dateFDSF  ",output_dict)
+                    
                     
                 elif len(review_dates) > 1:
                     date_objs = [dateutil.parser.parse(date) for date in review_dates]
-                    #print("date objs dfsafasf df",date_objs)
+                    
                     earliest_date = min(date_objs)
                     earliest_date_str = earliest_date.strftime('%Y-%m-%d')
                     output_dict["ReviewDate"] = earliest_date_str
@@ -409,20 +381,18 @@ def review_date(sublist1, sublist2, sublist3):
         
         sublist_string2 = '\n'.join(sublist2)                      #strings in list are joined together with a new line  
         doc2 = nlp(sublist_string2)    
-        #print("DOC WITH SPACES 23e3333",doc2)
+
         matcher2 = Matcher(nlp.vocab)                                    # creates a matcher object
        
         for pattern in patterns2:                                        # Add patterns to the matcher (Can delete once completed)
             matcher2.add("KEY INFO", [pattern])
-            #print ("added pattern ", pattern)  
-
+       
         
-        matches2 = matcher2(doc2)
-        #print("matches found in 1 for doc list fggggggggg",matches2)            #found no matches in the list with the single lines 
+        matches2 = matcher2(doc2)                 #found no matches in the list with the single lines 
        
         if matches2:
             matches2B = filter_matches(matches2)            
-            #print("matches date 17457815",matches2B)
+       
 
             review_dates_docs2 = []
 
@@ -437,9 +407,8 @@ def review_date(sublist1, sublist2, sublist3):
                 
                 end_index2 = newline_token.i if newline_token else len(doc2)
                 doc_date2 = doc2[end:end_index2]
-                #print("doc date 1gdff ff ",doc_date2)
                 review_dates_docs2.append(doc_date2)
-                #print("span date 1gdfgfdgdfgfg77",doc_date2)
+            
                 
             #previous loop got a list of the docs
         
@@ -457,22 +426,18 @@ def review_date(sublist1, sublist2, sublist3):
                     if matches_date2:
                         
                         matches_date2B = filter_matches(matches_date2)
-                        #print("matches date 2 hgfsgs fsere fda ",matches_date2B)
-                        
+                          
                         for match_id, start, end in matches_date2B:
 
                             span_date3 = doc_date2[start:end]
-                            #print("span date 1gfds  ",span_date3)
                             review_dates2.append(span_date3.text)
-                            #print("srint apn span ",span_date3.text)
-                            #print("output dict",output_dict)
+                         
 
                 if len(review_dates2) == 1:            
                     output_dict["ReviewDate"] = review_dates2[0]
-                    #print("output dictfg sfd       fdfggf  ",output_dict)
+                    
                     
                 elif len(review_dates2) > 1:
-                    #print("more than one mathchfhadshfhasd ")
                     date_objs = [dateutil.parser.parse(date) for date in review_dates2]
                     earliest_date2 = min(date_objs)
                     earliest_date_str2 = earliest_date2.strftime('%Y-%m-%d')
@@ -492,12 +457,12 @@ def review_date(sublist1, sublist2, sublist3):
 
         
         matches3 = matcher3(doc3)
-        #print("matches found in 1 for doc listfff a",matches3)
+      
         
         if matches3:
             matches3B = filter_matches(matches3)            
 
-            #print("matches dafd 3333 date 1",matches3B)
+       
 
             review_dates_docs3 = []
 
@@ -506,14 +471,14 @@ def review_date(sublist1, sublist2, sublist3):
                 
                 for token in doc3[end:]:
                     if token.text == '\n':
-                        #print("found line space 788787 ")
+                        
                         newline_token = token
                         break
                 
                 end_index = newline_token.i if newline_token else len(doc3)
                 doc_date3 = doc3[end:end_index]
                 review_dates_docs3.append(doc_date3)
-                #print("span date 1dfa dfdf  ",doc_date3)
+                
                 
             #previous loop got a list of the docs
         
@@ -531,25 +496,19 @@ def review_date(sublist1, sublist2, sublist3):
                     if matches_date3:
                         
                         matches_date3B = filter_matches(matches_date3)
-                        #print("matches date 333bbbbbbbbb ",matches_date3B)
                         for match_id, start, end in matches_date3B:
 
                             span_date4 = doc_date3[start:end]
-                            #print("span date 1666 56 665 ",span_date4)
                             review_dates3.append(span_date4.text)
-                            #print("Revuew date list after append yw",review_dates3)
-                            #print("output dict efwe ewf ",output_dict)
+                            
 
                 if len(review_dates3) == 1:            
                     output_dict["ReviewDate"] = review_dates3[0]
                     
                 elif len(review_dates3) > 1:
                     date_objs = [dateutil.parser.parse(date) for date in review_dates3]
-                    #print("date objs 3 ____",date_objs)
                     earliest_date3 = min(date_objs)
-                    #print("earliest date 3ffdfa ",earliest_date3)
                     earliest_date_str3 = earliest_date3.strftime('%Y-%m-%d')
-                    #print("earliest date str 3 fgfgggggg",earliest_date_str3)
                     output_dict["ReviewDate"] = earliest_date_str3
 
  
@@ -666,7 +625,7 @@ def contact_info(my_list):                      #Given a String splits it into 3
                         match_id, start, end = matches2B[0]
                         span1 = doc_sub[start:end]
                         output_dict["Contact_1"] = span1.text
-                        #print(span.text)
+            
                     
                     elif len(matches2B) > 1:
 
@@ -750,7 +709,7 @@ def extract_all_details(string):
     
     sublist1, sublist2, sublist3, my_list = form_lists(string)             #splits the list into 3 lists based on the number of colons and the number of words in the line to find key information
 
-    dic_1 = dept_details(sublist1, sublist2, sublist3)             #splits the list into 3 lists based on the number of colons and the number of words in the line to find key information
+    dic_1 = dept_details(sublist1, sublist2, sublist3)                      #splits the list into 3 lists based on the number of colons and the number of words in the line to find key information
     details_output_dict.update(dic_1)
 
     dic_2 = review_date(sublist1, sublist2, sublist3)              
